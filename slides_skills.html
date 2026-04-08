@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills: от размытого запроса к структурированному плану</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #0f0f1a; color: #e8e8f0;
+  height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; overflow: hidden;
+}
+.deck { width: 900px; position: relative; }
+.slide {
+  display: none; background: #1a1a2e;
+  border: 1px solid #2a2a4a; border-radius: 16px;
+  padding: 56px 64px; min-height: 500px; position: relative;
+  animation: fadeIn 0.3s ease;
+}
+.slide.active { display: flex; flex-direction: column; justify-content: center; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-num { position: absolute; top: 20px; right: 28px; font-size: 12px; color: #444466; letter-spacing: 1px; }
+.tag { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #6c63ff; margin-bottom: 16px; }
+h1 { font-size: 34px; font-weight: 700; line-height: 1.2; color: #fff; margin-bottom: 16px; }
+h2 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 28px; }
+.subtitle { font-size: 18px; color: #8888aa; line-height: 1.5; }
+ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+ul li { display: flex; align-items: flex-start; gap: 14px; font-size: 17px; line-height: 1.5; color: #c8c8e0; }
+ul li::before { content: '▸'; color: #6c63ff; flex-shrink: 0; margin-top: 2px; }
+ul.warn  li::before  { content: '✕'; color: #e05c5c; }
+ul.check li::before  { content: '✓'; color: #4caf82; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.col-box { background: #12122a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 22px 24px; }
+.col-box h3 { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+.col-box h3.bad  { color: #e05c5c; }
+.col-box h3.good { color: #4caf82; }
+.highlight-box {
+  background: #12122a; border-left: 3px solid #6c63ff;
+  border-radius: 0 8px 8px 0; padding: 20px 24px;
+  font-size: 16px; color: #c8c8e0; line-height: 1.6; margin-bottom: 24px;
+}
+.step { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+.step-num {
+  background: #6c63ff; color: #fff; font-weight: 700; font-size: 13px;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 3px;
+}
+.step-text { font-size: 16px; color: #c8c8e0; line-height: 1.5; }
+.prompt-box {
+  background: #0f0f1a; border: 1px solid #3a3a5a; border-radius: 8px;
+  padding: 16px 20px; font-family: 'Consolas', monospace;
+  font-size: 14px; color: #a78bfa; line-height: 1.6; margin: 16px 0;
+}
+code { background: #0f0f1a; color: #a78bfa; padding: 2px 7px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px; }
+.big-stat { font-size: 72px; font-weight: 800; color: #6c63ff; line-height: 1; }
+.stats-row { display: flex; gap: 56px; margin-bottom: 28px; }
+.stat-label { font-size: 15px; color: #8888aa; margin-top: 4px; }
+.quote { font-size: 18px; font-style: italic; color: #aaaacc; border-left: 3px solid #6c63ff; padding-left: 24px; line-height: 1.6; margin-top: 24px; }
+.plan-list { display: flex; flex-direction: column; gap: 10px; }
+.plan-row { display: flex; align-items: baseline; gap: 14px; font-size: 15px; color: #c8c8e0; line-height: 1.4; }
+.plan-num { background: #12122a; border: 1px solid #2a2a4a; color: #6c63ff; font-weight: 700; font-size: 12px; min-width: 28px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav { display: flex; align-items: center; gap: 20px; margin-top: 24px; justify-content: center; }
+button { background: #1a1a2e; border: 1px solid #2a2a4a; color: #c8c8e0; padding: 10px 28px; border-radius: 8px; font-size: 15px; cursor: pointer; transition: all 0.2s; }
+button:hover { background: #2a2a4a; border-color: #6c63ff; color: #fff; }
+button:disabled { opacity: 0.3; cursor: default; }
+.progress { display: flex; gap: 6px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #2a2a4a; transition: background 0.3s; }
+.dot.active { background: #6c63ff; }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<div class="slide active">
+  <span class="slide-num">1 / 14</span>
+  <div class="tag">AI-агенты · Инструменты разработчика</div>
+  <h1>Skills: от размытого запроса к структурированному плану</h1>
+  <p class="subtitle">Как скилл <code>/skills brainstorming</code> превращает одну строку ТЗ в детальный план работ</p>
+</div>
+<div class="slide">
+  <span class="slide-num">2 / 14</span>
+  <div class="tag">Проблема</div><h2>Агент без инструкций — это лотерея</h2><div class="two-col">
+        <div class="col-box">
+          <h3 class="bad">Без скилла</h3>
+          <ul class="warn"><li>"Глупая" текущая модель: Агент часто плохо угадывает, что вы имели в виду</li><li>Сразу пишет код — без глубокого анализа контекста</li><li>Небольшое контекстное окно: Агент быстро расходует лимит токенов и падает</li><li>Нет плана работы — итог непредсказуем</li></ul>
+        </div>
+        <div class="col-box">
+          <h3 class="good">С навыками Spec Driven Development</h3>
+          <ul class="check"><li>Сначала изучает проект и контекст</li><li>Находит аналоги в кодовой базе</li><li>Строит подробный план из атомарных небольших шагов</li><li>Экономит контекст при имплементации</li><li>Результат часто предсказуем и легко проверяем</li></ul>
+        </div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">3 / 14</span>
+  <div class="tag">Расширение · github.com/obra/superpowers</div><h2>Superpowers — жесткая дисциплина разработки</h2><div class="plan-list"><div class="plan-row"><div class="plan-num">1</div><div class="plan-text">Изучение проекта и зависимостей</div></div><div class="plan-row"><div class="plan-num">2</div><div class="plan-text">Предварительный анализ задачи в контексте проекта</div></div><div class="plan-row"><div class="plan-num">3</div><div class="plan-text">Уточняющие вопросы</div></div><div class="plan-row"><div class="plan-num">4</div><div class="plan-text"><strong style="color:#fff">Генерация СПЕКИ</strong> (Системное требование) для задачи</div></div><div class="plan-row"><div class="plan-num">5</div><div class="plan-text"><strong style="color:#fff">Генерация ПЛАНА</strong> работ по Систменому требованию</div></div><div class="plan-row"><div class="plan-num">6</div><div class="plan-text"><strong style="color:#fff">Пошаговая имплементация</strong> плана через Субагенты</div></div><div class="plan-row"><div class="plan-num">7</div><div class="plan-text"><strong style="color:#fff">Верификация</strong> результата (сборка, тесты)</div></div><div class="plan-row"><div class="plan-num">8</div><div class="plan-text">Субагенты с ревью на каждом шаге</div></div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">4 / 14</span>
+  <div class="tag">Что внутри</div><h2>Библиотека скиллов Superpowers</h2><div class="plan-list"><div class="plan-row"><div class="plan-num">1</div><div class="plan-text"><strong style="color:#fff">brainstorming</strong> — уточняющие вопросы, 2–3 подхода, утверждение дизайна до строчки кода</div></div><div class="plan-row"><div class="plan-num">2</div><div class="plan-text"><strong style="color:#fff">writing-plans</strong> — разбивка на задачи по 2–5 минут с точными путями файлов и командами</div></div><div class="plan-row"><div class="plan-num">3</div><div class="plan-text"><strong style="color:#fff">subagent-driven-development</strong> — свежий субагент на каждую задачу, двухэтапное ревью</div></div><div class="plan-row"><div class="plan-num">4</div><div class="plan-text"><strong style="color:#fff">requesting-code-review</strong> — независимый субагент-ревьюер: diff + тесты + оценка</div></div><div class="plan-row"><div class="plan-num">5</div><div class="plan-text"><strong style="color:#fff">red-green-refactor</strong> — обязательный TDD: сначала падающий тест, потом минимальный код</div></div><div class="plan-row"><div class="plan-num">6</div><div class="plan-text"><strong style="color:#fff">systematic-debugging</strong> — 4-фазный анализ первопричины вместо random-правок</div></div><div class="plan-row"><div class="plan-num">7</div><div class="plan-text"><strong style="color:#fff">verification-before-completion</strong> — объективная проверка до отчёта "готово"</div></div><div class="plan-row"><div class="plan-num">8</div><div class="plan-text"><strong style="color:#fff">writing-skills</strong> — создание собственных скиллов под нужды команды</div></div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">5 / 14</span>
+  <div class="tag">Инструмент</div><h2>Быстрый старт</h2><div class="step"><div class="step-num">1</div><div class="step-text">Устанавливается как расширение: <code>/extensions install https://github.com/obra/superpowers</code> *</div></div><div class="step"><div class="step-num">2</div><div class="step-text">Вызывается одной командой: <code>/skills brainstorming</code></div></div><div class="step"><div class="step-num">3</div><div class="step-text">Ожидание около 5 минут (вечером ¯\_(ツ)_/¯ )</div></div><div class="step"><div class="step-num">4</div><div class="step-text">"Пожалуйста, опишите задачу, и я помогу спроектировать решение"</div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">6 / 14</span>
+  <div class="tag">Живой кейс</div><h2>Одна строка ТЗ → подробный план</h2><p style="font-size:15px;color:#8888aa;margin-bottom:8px;">Входящий запрос:</p><div class="prompt-box">Удалить историчность для сущности RatingB2BEntity</div><ul><li>Агент прочитал <code>GIGACODE.md</code> и весь связанный код</li><li>Нашёл паттерн историчности в <code>ContractorDaoImpl</code></li><li>Задал уточняющие вопросы! (Далее)</li><li>Составил спеку и план из <strong style="color:#fff">8 задач</strong></li><li>Предложил два режима исполнения: Subagent-Driven (рекомендуемый) и Inline</li></ul>
+</div>
+<div class="slide">
+  <span class="slide-num">7 / 14</span>
+  <div class="tag">Уточняющие вопросы</div><h2>Агент уточняет — прежде чем действовать</h2><div class="plan-list"><div class="plan-row"><div class="plan-num">1</div><div class="plan-text">Что удалить: только таблицу <code>rating_b2b_history</code> или полностью убрать <code>version</code> и <code>acting_from</code>?</div></div><div class="plan-row"><div class="plan-num">2</div><div class="plan-text">Что делать с существующими данными в <code>rating_b2b_history</code> — просто удалить или сделать миграцию?</div></div><div class="plan-row"><div class="plan-num">3</div><div class="plan-text">Удалить связь <code>List<RatingB2BHistory> history()</code> или оставить пустой коллекцией?</div></div><div class="plan-row"><div class="plan-num">4</div><div class="plan-text">Нужно ли обновить схему <code>RatingB2B</code> в OpenAPI?</div></div><div class="plan-row"><div class="plan-num">5</div><div class="plan-text">Поле <code>version</code> в DTO — удалить или оставить для обратной совместимости?</div></div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">8 / 14</span>
+  <div class="tag">Сгенерированный план</div><h2>Что составил агент: план из 8 задач</h2><div class="plan-list"><div class="plan-row"><div class="plan-num">1</div><div class="plan-text"><strong style="color:#fff">Task 1</strong> — Удалить <code>RatingB2BHistory.java</code></div></div><div class="plan-row"><div class="plan-num">2</div><div class="plan-text"><strong style="color:#fff">Task 2</strong> — Убрать <code>VersionAware</code> из <code>RatingB2BEntity</code> (version, actingFrom, history)</div></div><div class="plan-row"><div class="plan-num">3</div><div class="plan-text"><strong style="color:#fff">Task 3</strong> — Убрать <code>version</code> из DTO <code>RatingB2B</code></div></div><div class="plan-row"><div class="plan-num">4</div><div class="plan-text"><strong style="color:#fff">Task 4</strong> — Упростить <code>RatingDaoImpl</code>: убрать логику history из createRating/updateRating</div></div><div class="plan-row"><div class="plan-num">5</div><div class="plan-text"><strong style="color:#fff">Task 5</strong> — Обновить <code>changelog.xml</code>: добавить include для v1.0.1</div></div><div class="plan-row"><div class="plan-num">6</div><div class="plan-text"><strong style="color:#fff">Task 6</strong> — Создать Liquibase-миграцию: drop таблицы и колонок</div></div><div class="plan-row"><div class="plan-num">7</div><div class="plan-text"><strong style="color:#fff">Task 7</strong> — Обновить тесты <code>RatingDaoImplTest</code></div></div><div class="plan-row"><div class="plan-num">8</div><div class="plan-text"><strong style="color:#fff">Task 8</strong> — Сборка <code>mvn clean install</code> + все тесты + Checkstyle</div></div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">9 / 14</span>
+  <div class="tag">Ограничение</div><h2>Субагент взял — и не дотянул</h2><p style="font-size:15px;color:#8888aa;margin-bottom:8px;">Входящий запрос:</p><div class="prompt-box">Subagent-Driven: свежий субагент на каждую задачу</div><ul><li><strong style="color:#fff">Задачи 1–6 выполнены:</strong> удалена history-entity, упрощены entity / DAO / DTO / mapper, создана Liquibase-миграция</li><li><strong style="color:#fff">Задача 7 (тесты):</strong> субагент начал и оборвался на полуслове — «Теперь нужно обновить тесты, чтобы они…»</li><li>Причина: субагент зациклился в неочевидном месте при попытке исправить тест и потратил лимит токенов</li><li>Итог: 6 из 8 задач закрыты автономно, тесты и финальная сборка — руками</li></ul>
+</div>
+<div class="slide">
+  <span class="slide-num">10 / 14</span>
+  <div class="tag">Скилл requesting-code-review</div><h2>Код-ревью через субагент-ревьюер</h2><div class="highlight-box">Свежий субагент-ревьюер получает только код и контекст задачи — никакой истории сессии. Независимый взгляд на результат.</div><div class="step"><div class="step-num">1</div><div class="step-text">Вызов: <code>/skills requesting-code-review</code> → агент берёт BASE_SHA и HEAD_SHA из <code>git log</code></div></div><div class="step"><div class="step-num">2</div><div class="step-text">Диспетчеризирует <code>code-reviewer</code> субагент: что сделано, план, диапазон коммитов</div></div><div class="step"><div class="step-num">3</div><div class="step-text">Субагент читает diff, запускает <code>mvn test</code>, проверяет соответствие плану</div></div><div class="step"><div class="step-num">4</div><div class="step-text">Возвращает: Strengths / Issues (Critical → Important → Minor) / Overall Assessment</div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">11 / 14</span>
+  <div class="tag">Результат ревью</div><h2>Ревью показало: реализация корректна</h2><p style="font-size:15px;color:#8888aa;margin-bottom:8px;">Входящий запрос:</p><div class="prompt-box">Overall Assessment: implementation is CORRECT and COMPLETE</div><ul><li>✅ Все 7 изменений подтверждены: entity, DAO, DTO, mapper, миграция, тесты</li><li>✅ <code>mvn test</code> — <strong style="color:#fff">23 теста, 0 ошибок</strong>, <code>BUILD SUCCESS</code></li><li>✅ Нет breaking changes в публичном API <code>RatingDao</code></li><li>Найдено 2 незначительных расхождения между планом и кодом — в коде всё правильно, план был неточен</li><li>Вывод субагента: <strong style="color:#fff">готово к мержу в main</strong></li></ul>
+</div>
+<div class="slide">
+  <span class="slide-num">12 / 14</span>
+  <div class="tag">Результат</div><h2>Что получилось</h2><div class="stats-row"><div><div class="big-stat">6/8</div><div class="stat-label">задач закрыто автономно</div></div><div><div class="big-stat">1</div><div class="stat-label">строка ТЗ на входе</div></div></div><ul class="check"><li>Субагент-режим удобен, но не спасает от "зацикливания" в неочевидных местах</li><li>Более мощная модель (уровня Opus) вероятно сделала бы план подробней и понятней для более простых моделей</li><li>Скилл снизил порог входа: не нужно уметь писать длинные промпты</li></ul>
+</div>
+<div class="slide">
+  <span class="slide-num">13 / 14</span>
+  <div class="tag">Текущая ситуация</div><h2>Текущие преграды для буста агентской разработки</h2><div class="plan-list"><div class="plan-row"><div class="plan-num">1</div><div class="plan-text">Нет YOLO-режима (You Only Live Once) *</div></div><div class="plan-row"><div class="plan-num">2</div><div class="plan-text">Медленная кодерская LLM (ждем железо)</div></div><div class="plan-row"><div class="plan-num">3</div><div class="plan-text">Небольшое контекстное окно в 130k токенов (обещают 200k)</div></div><div class="plan-row"><div class="plan-num">4</div><div class="plan-text">Неадекватный Цензор (он вообще нужен?)</div></div><div class="plan-row"><div class="plan-num">5</div><div class="plan-text">Нет мощной аналитической LLM (желательно другого вендора)</div></div><div class="plan-row"><div class="plan-num">6</div><div class="plan-text">Относительно высокий порог вхождения для не тех персонала</div></div><div class="plan-row"><div class="plan-num">7</div><div class="plan-text">Всё в целом работает медленно и с «бубнами»</div></div><div class="plan-row"><div class="plan-num">8</div><div class="plan-text">Много времени уходит на эксперименты и исследования</div></div><div class="plan-row"><div class="plan-num">9</div><div class="plan-text">Методолгия работы в зачаточном состоянии</div></div></div>
+</div>
+<div class="slide">
+  <span class="slide-num">14 / 14</span>
+  <div class="tag">Вывод</div><h2>Что делать прямо сейчас</h2><div class="plan-list"><div class="plan-row"><div class="plan-num">1</div><div class="plan-text">Нарабатывать навыки и практики взаимодействия с агентами</div></div><div class="plan-row"><div class="plan-num">2</div><div class="plan-text">Готовиться к послаблению текущих корпоративных ограничений</div></div><div class="plan-row"><div class="plan-num">3</div><div class="plan-text">Делиться РАБОЧИМИ кейсами внутри сообществ банка</div></div></div>
+</div>
+</div>
+<div class="nav">
+  <button id="prev" onclick="go(-1)" disabled>← Назад</button>
+  <div class="progress" id="dots"></div>
+  <button id="next" onclick="go(1)">Вперёд →</button>
+</div>
+<script>
+const slides = document.querySelectorAll('.slide');
+const dotsEl = document.getElementById('dots');
+let cur = 0;
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  dotsEl.appendChild(d);
+});
+function go(dir) {
+  slides[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('active');
+  cur += dir;
+  slides[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('active');
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === slides.length - 1;
+}
+document.addEventListener('keydown', e => {
+  if ((e.key === 'ArrowRight' || e.key === 'ArrowDown') && cur < slides.length - 1) go(1);
+  if ((e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   && cur > 0) go(-1);
+});
+</script>
+</body>
+</html>
