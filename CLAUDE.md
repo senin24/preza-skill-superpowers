@@ -26,9 +26,20 @@ Markdown с собственным DSL:
 - Статистика: `stat: VALUE | label`
 - Inline-разметка: `**bold**`, `` `code` ``
 
+## GitHub Pages
+
+Сайт опубликован: https://senin24.github.io/preza-skill-superpowers/
+
+- Source: ветка `main`, корень `/`
+- `index.html` — редирект на `slides_skills.html` (не нужно обновлять при пересборке)
+- `.nojekyll` — отключает Jekyll-обработку на GitHub Pages
+
+После изменения слайдов: пересобрать HTML, закоммитить и запушить — деплой автоматический.
+
 ## Структура
 
 - `slides_skills.md` — исходник презентации
 - `build_presentation.py` — генератор HTML из markdown (парсер + рендер + CSS/JS)
 - `slides_skills.html` — сгенерированный результат
+- `index.html` — точка входа GitHub Pages (редирект)
 - `.artifacts/` — вспомогательные материалы: экспорты сессий, заметки, скриншоты
